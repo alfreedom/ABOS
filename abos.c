@@ -1,16 +1,24 @@
-/******************************************************
- * abos.c
- *
- * Program Name:  abos-bootloader
- *         Date:  2018-08-17
- *       Author:  Alfredo Orozco
- *      License:  GNU
- *      Version:  1.0.0
- *
- * Description:
- *  Bootloader simple para microcontroladores Atmega16/32
- * 
- *****************************************************/
+ /*****************************************************************************
+ *   file: abos.c                                                             *
+ *                                                                            *
+ *	 ABOS Bootloader                                                          *
+ *                                                                            *
+ *   This program is free software: you can redistribute it and/or modify     *
+ *   it under the terms of the GNU General Public License as published by     *
+ *   the Free Software Foundation, either version 3 of the License, or        *
+ *   (at your option) any later version.                                      *
+ *                                                                            *
+ *   This program is distributed in the hope that it will be useful,          *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            *
+ *   GNU General Public License for more details.                             *
+ *                                                                            *
+ *   You should have received a copy of the GNU General Public License        *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>     *
+ *                                                                            *
+ *   Written by Alfredo Orozco <alfredoopa@gmail.com>                         *
+ *****************************************************************************/
+
 #define BAUD 38400
 
 #include <avr/io.h>
