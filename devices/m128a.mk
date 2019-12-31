@@ -24,6 +24,7 @@
 ##################################################
 DEVICE         = atmega128a
 AVRDUDE_DEVICE = atmega128
+MCU_MODEL	   = m128a
 CLOCK          = 16000000
 LFUSE          = 0xFF
 HFUSE          = 0xDC

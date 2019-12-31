@@ -24,6 +24,7 @@
 ##################################################
 DEVICE         = atmega32
 AVRDUDE_DEVICE = atmega32
+MCU_MODEL	   = m32
 CLOCK          = 16000000
 LFUSE          = 0xFF
 HFUSE          = 0x9C

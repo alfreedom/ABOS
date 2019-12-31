@@ -27,49 +27,50 @@
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <util/setbaud.h>
+#include <string.h>
 
 #define ABOS_VERSION_MA 1
-#define ABOS_VERSION_MI 0
+#define ABOS_VERSION_MI 2
 #define ABOS_VERSION_IS 0
 
 #ifdef UDR
 
-#define UC_UDR	UDR
-#define UC_UCSRC	UCSRC
-#define UC_UCSRB	UCSRB
-#define UC_UCSRA	UCSRA
-#define UC_UDRE UDRE
-#define UC_RXC RXC
-#define UC_UBRRL UBRRL
-#define UC_UBRRH UBRRH
-#define UC_URSEL URSEL
-#define UC_UCSZ0 UCSZ0
-#define UC_UCSZ1 UCSZ1
-#define UC_RXEN RXEN
-#define UC_TXEN TXEN
+#define UC_UDR    UDR
+#define UC_UCSRC  UCSRC
+#define UC_UCSRB  UCSRB
+#define UC_UCSRA  UCSRA
+#define UC_UDRE   UDRE
+#define UC_RXC    RXC
+#define UC_UBRRL  UBRRL
+#define UC_UBRRH  UBRRH
+#define UC_URSEL  URSEL
+#define UC_UCSZ0  UCSZ0
+#define UC_UCSZ1  UCSZ1
+#define UC_RXEN   RXEN
+#define UC_TXEN   TXEN
 
 #elif defined(UDR0)			
 
-#define UC_UDR UDR0
-#define UC_UCSRC	UCSR0C
-#define UC_UCSRB	UCSR0B
-#define UC_UCSRA	UCSR0A
-#define UC_UDRE UDRE0
-#define UC_RXC RXC0
-#define UC_UBRRL UBRR0L
-#define UC_UBRRH UBRR0H
-#define UC_URSEL 0
-#define UC_UCSZ0 UCSZ00
-#define UC_UCSZ1 UCSZ01
-#define UC_RXEN RXEN0
-#define UC_TXEN TXEN0
+#define UC_UDR    UDR0
+#define UC_UCSRC  UCSR0C
+#define UC_UCSRB  UCSR0B
+#define UC_UCSRA  UCSR0A
+#define UC_UDRE   UDRE0
+#define UC_RXC    RXC0
+#define UC_UBRRL  UBRR0L
+#define UC_UBRRH  UBRR0H
+#define UC_URSEL  0
+#define UC_UCSZ0  UCSZ00
+#define UC_UCSZ1  UCSZ01
+#define UC_RXEN   RXEN0
+#define UC_TXEN   TXEN0
 
 #elif defined(UDR1)			
 
 #define UC_UDR    UDR1
-#define UC_UCSRC	UCSR1C
-#define UC_UCSRB	UCSR1B
-#define UC_UCSRA	UCSR1A
+#define UC_UCSRC  UCSR1C
+#define UC_UCSRB  UCSR1B
+#define UC_UCSRA  UCSR1A
 #define UC_UDRE   UDRE1
 #define UC_RXC    RXC1
 #define UC_UBRRL  UBRR1L
@@ -82,22 +83,26 @@
 
 #endif
 
-#define SYNC_COMMAND							0x16
-#define ENTER_BOOTLOADER_COMMAND	0x0F
-#define END_TRANSMISSION_COMMAND	0x04
-#define ACK_COMMAND								0x06
-#define NACK_COMMAND							0x15
-#define CANCEL_BOOTLOADER_COMMAND	0x1B
-#define PAGE_WRITE_COMMAND				0x02
-#define CANCELATION_COMMAND				0x18
+#define SYNC_COMMAND                0x16
+#define ENTER_BOOTLOADER_COMMAND    0x0F
+#define END_TRANSMISSION_COMMAND    0x04
+#define ACK_COMMAND                 0x06
+#define NACK_COMMAND                0x15
+#define CANCEL_BOOTLOADER_COMMAND   0x1B
+#define PAGE_WRITE_COMMAND          0x02
+#define CANCELATION_COMMAND         0x18
 
 #define MAX_RECEIVE_TRIES 700
+
+#define MCU_MODEL_LEN 10
 
 void UsartWrite(uint8_t byte);
 int UsartRead();
 void Bootloader();
 
 int main(void) {
+
+	char mcu_model[MCU_MODEL_LEN+1] = MCU_MODEL;
 
 	int recv;
 	/* Inicializa la USART */
@@ -111,6 +116,10 @@ int main(void) {
 	{
 		/* Envía ACK */
 		UsartWrite(ACK_COMMAND);
+
+		/* Envía el modelo del microcontrolador */
+		for(uint8_t i = 0; i < MCU_MODEL_LEN; i++)
+			UsartWrite(mcu_model[i]);
 
 		/* Envia el tamaño de página */
 		UsartWrite((uint8_t)SPM_PAGESIZE);
@@ -146,7 +155,7 @@ void Bootloader()
 	int cmd;
 	uint8_t exit=0;
 	uint16_t i;
-  uint8_t sreg;
+	uint8_t sreg;
 	uint32_t addr=0;
 	uint32_t page = 0;
 

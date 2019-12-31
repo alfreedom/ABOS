@@ -1,6 +1,6 @@
 #####################################################
 #                  ABOS Makefile                    #
-#			      (AVR Bootloader Open Source)            #
+#           (AVR Bootloader Open Source)            #
 #                                                   #
 # Makefile to create a ABOS bootloader application  #
 #                                                   #
@@ -19,7 +19,7 @@ OBJECT_FILES = abos.o
 
 INCLUDEPATHS =  -I .
 
-CFLAGS =  -g -Wall -Os -DDEVICE=$(DEVICE) -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) $(INCLUDEPATHS) -DFLASH_SIZE=$(FLASH_SIZE) -DBOOT_SIZE=$(BOOT_SIZE)
+CFLAGS =  -g -Wall -Os -DDEVICE=$(DEVICE) -DF_CPU=$(CLOCK) -DMCU_MODEL=\"$(MCU_MODEL)\" -mmcu=$(DEVICE) $(INCLUDEPATHS) -DFLASH_SIZE=$(FLASH_SIZE) -DBOOT_SIZE=$(BOOT_SIZE)
 LDFLAGS = -g -Wall -Os -Wl,--section-start=.text=$(BOOT_START) -Wl,-Map,$(PROJECT_NAME).map
 
 COMPILE = avr-gcc $(CFLAGS) 
@@ -44,6 +44,9 @@ all: $(PROJECT_NAME).hex
 
 flash:	all
 	$(AVRDUDE) -U flash:w:$(PROJECT_NAME).hex:i
+
+clean_fuse: 
+	$(AVRDUDE) -U lfuse:w:0xff:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
 
 fuse:
 	$(AVRDUDE) -V $(FUSES)
@@ -77,7 +80,20 @@ read_eeprom:
 
 read_flash:
 	$(AVRDUDE) -U flash:r:$(PROJECT_NAME).flash.bin:r
-install: flash fuse
+
+install: all 
+	sleep 0.5
+	echo "Restoring fuses..."
+	$(AVRDUDE) -U lfuse:w:0xff:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
+	sleep 0.5
+	echo "Installing Firmware..."
+	$(AVRDUDE) -U flash:w:$(PROJECT_NAME).hex:i || true
+	sleep 0.5
+	echo "Programming fuses..."
+	$(AVRDUDE) -V $(FUSES)
+	sleep 0.5
+	echo "Programming lockbits..."
+	$(AVRDUDE) -U lock:w:$(LOCK_BITS):m
 
 clean:
 	rm -f $(PROJECT_NAME).hex $(PROJECT_NAME).elf $(PROJECT_NAME).eep $(PROJECT_NAME).map $(PROJECT_NAME).bin $(OBJECT_FILES) $(PROJECT_NAME).lock.hex $(PROJECT_NAME).lock
