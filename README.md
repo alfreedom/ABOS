@@ -7,7 +7,7 @@
 ## Supported Devices
 - ATmega16
 - ATmega32
-- ATmega128A
+- ATmega128/ATmega128A
 
 
 ### The default baudrate is **_38400_**, is defined in the firs code line of the **_"abos.c"_** file. If you need other baudrate, change these value.
