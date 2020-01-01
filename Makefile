@@ -19,7 +19,7 @@ OBJECT_FILES = abos.o
 
 INCLUDEPATHS =  -I .
 
-CFLAGS =  -g -Wall -Os -DDEVICE=$(DEVICE) -DF_CPU=$(CLOCK) -DMCU_MODEL=\"$(MCU_MODEL)\" -mmcu=$(DEVICE) $(INCLUDEPATHS) -DFLASH_SIZE=$(FLASH_SIZE) -DBOOT_SIZE=$(BOOT_SIZE)
+CFLAGS =  -g -Wall -Os -DDEVICE=$(DEVICE) -DF_CPU=$(CLOCK) -DMCU_MODEL=\"$(DEVICE)\" -mmcu=$(DEVICE) $(INCLUDEPATHS) -DFLASH_SIZE=$(FLASH_SIZE) -DBOOT_SIZE=$(BOOT_SIZE)
 LDFLAGS = -g -Wall -Os -Wl,--section-start=.text=$(BOOT_START) -Wl,-Map,$(PROJECT_NAME).map
 
 COMPILE = avr-gcc $(CFLAGS) 
@@ -112,3 +112,6 @@ disasm:	$(PROJECT_NAME).elf
 
 cpp:
 	$(COMPILE) -E main.c
+
+test:
+	

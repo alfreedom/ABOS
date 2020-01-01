@@ -25,7 +25,6 @@
 
 DEVICE         = atmega16
 AVRDUDE_DEVICE = atmega16
-MCU_MODEL	   = "m16"
 CLOCK          = 16000000
 LFUSE          = 0xFF
 HFUSE          = 0xDA

@@ -22,9 +22,8 @@
 ##################################################
 #      Params or ATmega128A Microcontroller      #
 ##################################################
-DEVICE         = atmega128a
+DEVICE         = atmega128
 AVRDUDE_DEVICE = atmega128
-MCU_MODEL	   = m128a
 CLOCK          = 16000000
 LFUSE          = 0xFF
 HFUSE          = 0xDC

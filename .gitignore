@@ -4,3 +4,7 @@
 *.o
 *.elf
 *.eep
+!big-hex.hex
+!medium-hex.hex
+!normal-hex.hex
+!small-hex.hex

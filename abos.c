@@ -94,7 +94,7 @@
 
 #define MAX_RECEIVE_TRIES 700
 
-#define MCU_MODEL_LEN 10
+#define MCU_MODEL_LEN 20
 
 void UsartWrite(uint8_t byte);
 int UsartRead();
@@ -116,6 +116,10 @@ int main(void) {
 	{
 		/* Envía ACK */
 		UsartWrite(ACK_COMMAND);
+		/* Envia la versión del ABOS */
+		UsartWrite((uint8_t)ABOS_VERSION_MA);
+		UsartWrite((uint8_t)ABOS_VERSION_MI);
+		UsartWrite((uint8_t)ABOS_VERSION_IS);
 
 		/* Envía el modelo del microcontrolador */
 		for(uint8_t i = 0; i < MCU_MODEL_LEN; i++)
@@ -129,10 +133,6 @@ int main(void) {
 		UsartWrite((uint8_t)((FLASH_SIZE-BOOT_SIZE)/1024));
 		UsartWrite(((FLASH_SIZE - BOOT_SIZE)/1024) >> 8);
 
-		/* Envia la versión del ABOS */
-		UsartWrite((uint8_t)ABOS_VERSION_MA);
-		UsartWrite((uint8_t)ABOS_VERSION_MI);
-		UsartWrite((uint8_t)ABOS_VERSION_IS);
 
 		/* Espera comando SYNC para entrar en modo bootloader o 
 		   ESC para cancelar la carga */
