@@ -48,11 +48,20 @@
 
 ### Enter Bootloader Mode
 1. The bootloader waits for **_Sync Command_ (SYN [0x16])**. If sync command not received for a while, jump to user program.
-2. When receive sync, the bootloader respose with **_Acknowledge Command (ACK [0x06])_**, the **_PAGE_SIZE_** (2 bytes) and the available **_MEMORY_SIZE_** for program (2 bytes).
+2. When receive sync, the bootloader respose with **_Acknowledge Command (ACK [0x06])_** (1 byte), the **_BOOTLOADER VERSION_** (3 bytes), the **_CPU MODEL_** (20 bytes), the **_PAGE_SIZE_** (2 bytes) and the available **_MEMORY_SIZE_** for program (2 bytes), 28 bytes in total (see figure 1).
 3. The bootloader wait for the **_Enter Bootloader command (SI [0x0F])_** or the **_Cancel Bootloader command (ESC [0x1B])_**. If some command is not received for a while, jump to user program.
 4. If the bootloader receives the **_Cancel Bootloader command_**, jump to user program, else if receives the **_Enter Bootloader command_** enter in bootloader mode
 5. The bootloader response with **_Acknowledge Command (ACK [0x06])_** to the **_Enter Bootloader command_** or the **_Cancel Bootloader command_**.
 6. Once entered in **_Bootloader mode_**, the bootloader can receive 2 command types: **_Page Write Command (STX [0x02])_** or **_End of Transmission Program (EOT [0x04])_**.
+
+##### Figure 1
+
+	     ACK      VERSION    CPU MODEL   PAGE SIZE   FLASH SIZE
+	┌──────────┬───────────┬───────────┬───────────┬────────────┐
+	│ 1 (0x06) │     3     │    20     │      2    │      2     | = 28 bytes
+	└──────────┴───────────┴───────────┴───────────┴────────────┘
+
+#
 
 ### Send a program to bootloader
 The loading of a program is done after entering the bootloader mode, sending the **_Page Write Command (STX [0x02])_** followed by the page data chunks of size **_PAGE_SIZE_**. At the end of each packet (STX + DATA_PAGE) the booloader responds with **_Acknowledge Command (ACK [0x06])_**.
